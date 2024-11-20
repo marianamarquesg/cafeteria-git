@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
+import javax.swing.JOptionPane;
+
 
 public class ClienteView extends JInternalFrame {
 
@@ -34,6 +36,8 @@ public class ClienteView extends JInternalFrame {
 	private JButton btPesquisar;
 
 	private IClienteService service = null;
+
+	private Boolean clienteNovo = false;
 
 	/**
 	 * Cria a janela do CRUD do cliente
@@ -83,7 +87,7 @@ public class ClienteView extends JInternalFrame {
 			e.printStackTrace();
 		}
 
-		btSalvar = new JButton("Salvar");
+		btSalvar = new JButton("Confirmar");
 		btSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -93,7 +97,7 @@ public class ClienteView extends JInternalFrame {
 		btSalvar.setBounds(434, 126, 105, 27);
 		getContentPane().add(btSalvar);
 
-		btVoltar = new JButton("Voltar");
+		btVoltar = new JButton("Cancelar");
 		btVoltar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -131,7 +135,7 @@ public class ClienteView extends JInternalFrame {
 		// configura os botões de ação
 		btSalvar.setEnabled(false);
 		btVoltar.setEnabled(false);
-		btNovoCliente.setEnabled(true);
+		btNovoCliente.setVisible(true);
 		btPesquisar.setEnabled(true);
 
 		// configura o comportamento dos campos
@@ -140,12 +144,58 @@ public class ClienteView extends JInternalFrame {
 		telefone.setEnabled(false);
 	}
 
+	public void setupClienteEncontrado() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoCliente.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
+
+	public void setupVoltar() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoCliente.setEnabled(true);
+		btPesquisar.setEnabled(true);
+
+		// configura o comportamento dos campos
+		id.setEnabled(true);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
+
+	public void setupAdicionarCliente() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoCliente.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
 	/**
 	 * Executa as tarefas para efetuar uma pesquisa com base no ID informado
 	 */
 	protected void onClickPesquisar() {
-		// TODO: Implementar
-		System.out.println("==> onClickPesquisar");
+		int idCliente =  Integer.parseInt(id.getText());
+		Cliente cliente = this.service.pesquisarClientePorId(idCliente); //chama a service
+		if(cliente != null) {
+			this.nome.setText(cliente.getNome());
+			this.telefone.setText(cliente.getTelefone());
+			this.setupClienteEncontrado();
+			this.clienteNovo = false;
+		}else {
+			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}			
 	}
 
 	/**
@@ -153,23 +203,43 @@ public class ClienteView extends JInternalFrame {
 	 * cliente
 	 */
 	protected void onClickIncluirNovoCliente() {
-		// TODO: Implementar
+		this.setupAdicionarCliente();
+		this.clienteNovo = true;		
 		System.out.println("==> onClickIncluirNovoCliente");
 	}
 
 	/**
-	 * Executa as tarefas para voltar a inclusão de um cliente
+	 * Executa as tarefas para cancelar a inclusão de um cliente
 	 */
 	protected void onClickVoltar() {
-		// TODO: Implementar
+		this.nome.setText("");
+		this.telefone.setText("");
+		this.id.setText("");
+		this.setupVoltar();
 		System.out.println("==> onClickVoltar");
 	}
 
 	/**
-	 * Executa as tarefas para salvar a inclusão de um novo cliente
+	 * Executa as tarefas para confirmar a inclusão de um novo cliente
 	 */
 	protected void onClickSalvar() {
-		// TODO: Implementar
+		String nomeCliente = nome.getText();
+		String telefoneCliente = telefone.getText();
+		int idCliente =  Integer.parseInt(id.getText());
+
+		if(!nomeCliente.isEmpty() && !telefoneCliente.isEmpty()) {
+			ClienteService upsert = new ClienteService();
+				if(this.clienteNovo) {	
+					upsert.cadastrarCliente(nomeCliente, telefoneCliente);
+					this.setupAdicionarCliente();	
+				} else {
+					upsert.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
+				}
+			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
+		}else{
+			JOptionPane.showMessageDialog(null, "Preencha o nome e o telefone!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}
+			
 		System.out.println("==> onClickSalvar");
 	}
 

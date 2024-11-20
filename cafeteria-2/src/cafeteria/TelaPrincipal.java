@@ -15,6 +15,7 @@ import javax.swing.KeyStroke;
 
 import cafeteria.vendas.IVendaService;
 import cafeteria.vendas.VendaView;
+import cafeteria.vendas.clientes.ClienteService;
 import cafeteria.vendas.clientes.ClienteView;
 import cafeteria.vendas.clientes.IClienteService;
 import cafeteria.vendas.produtos.IProdutoService;
@@ -44,6 +45,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 
 	public TelaPrincipal() {
 		super("::: " + TITULO + "  | v" + VERSAO + " :::");
+		this.clienteService = new ClienteService();
 
 		// Define o tamanho e a posição da tela
 		int[] bounds = calcBounds();
