@@ -11,6 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.text.MaskFormatter;
+import javax.swing.JOptionPane;
+
 
 public class ClienteView extends JInternalFrame {
 
@@ -28,12 +30,14 @@ public class ClienteView extends JInternalFrame {
 	private JTextField nome;
 	private JFormattedTextField telefone;
 
-	private JButton btSalvar;
-	private JButton btVoltar;
+	private JButton btConfirmar;
+	private JButton btCancelar;
 	private JButton btNovoCliente;
 	private JButton btPesquisar;
 
 	private IClienteService service = null;
+
+	private Boolean clienteNovo = false;
 
 	/**
 	 * Cria a janela do CRUD do cliente
@@ -83,25 +87,25 @@ public class ClienteView extends JInternalFrame {
 			e.printStackTrace();
 		}
 
-		btSalvar = new JButton("Salvar");
-		btSalvar.addActionListener(new ActionListener() {
+		btConfirmar = new JButton("Confirmar");
+		btConfirmar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				onClickSalvar();
+				onClickConfirmar();
 			}
 		});
-		btSalvar.setBounds(434, 126, 105, 27);
-		getContentPane().add(btSalvar);
+		btConfirmar.setBounds(434, 126, 105, 27);
+		getContentPane().add(btConfirmar);
 
-		btVoltar = new JButton("Voltar");
-		btVoltar.addActionListener(new ActionListener() {
+		btCancelar = new JButton("Cancelar");
+		btCancelar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				onClickVoltar();
+				onClickCancelar();
 			}
 		});
-		btVoltar.setBounds(317, 126, 105, 27);
-		getContentPane().add(btVoltar);
+		btCancelar.setBounds(317, 126, 105, 27);
+		getContentPane().add(btCancelar);
 
 		btNovoCliente = new JButton("Novo Cliente");
 		btNovoCliente.addActionListener(new ActionListener() {
@@ -129,9 +133,9 @@ public class ClienteView extends JInternalFrame {
 	 */
 	public void setupConsultar() {
 		// configura os botões de ação
-		btSalvar.setEnabled(false);
-		btVoltar.setEnabled(false);
-		btNovoCliente.setEnabled(true);
+		btConfirmar.setEnabled(false);
+		btCancelar.setEnabled(false);
+		btNovoCliente.setVisible(true);
 		btPesquisar.setEnabled(true);
 
 		// configura o comportamento dos campos
@@ -140,12 +144,58 @@ public class ClienteView extends JInternalFrame {
 		telefone.setEnabled(false);
 	}
 
+	public void setupClienteEncontrado() {
+		// configura os botões de ação
+		btConfirmar.setEnabled(true);
+		btCancelar.setEnabled(true);
+		btNovoCliente.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
+
+	public void setupVoltar() {
+		// configura os botões de ação
+		btConfirmar.setEnabled(true);
+		btCancelar.setEnabled(true);
+		btNovoCliente.setEnabled(true);
+		btPesquisar.setEnabled(true);
+
+		// configura o comportamento dos campos
+		id.setEnabled(true);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
+
+	public void setupAdicionarCliente() {
+		// configura os botões de ação
+		btConfirmar.setEnabled(true);
+		btCancelar.setEnabled(true);
+		btNovoCliente.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		telefone.setEnabled(true);
+	}
 	/**
 	 * Executa as tarefas para efetuar uma pesquisa com base no ID informado
 	 */
 	protected void onClickPesquisar() {
-		// TODO: Implementar
-		System.out.println("==> onClickPesquisar");
+		int idCliente =  Integer.parseInt(id.getText());
+		Cliente cliente = this.service.pesquisarClientePorId(idCliente); //chama a service
+		if(cliente != null) {
+			this.nome.setText(cliente.getNome());
+			this.telefone.setText(cliente.getTelefone());
+			this.setupClienteEncontrado();
+			this.clienteNovo = false;
+		}else {
+			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}			
 	}
 
 	/**
@@ -153,24 +203,44 @@ public class ClienteView extends JInternalFrame {
 	 * cliente
 	 */
 	protected void onClickIncluirNovoCliente() {
-		// TODO: Implementar
+		this.setupAdicionarCliente();
+		this.clienteNovo = true;		
 		System.out.println("==> onClickIncluirNovoCliente");
 	}
 
 	/**
-	 * Executa as tarefas para voltar a inclusão de um cliente
+	 * Executa as tarefas para cancelar a inclusão de um cliente
 	 */
-	protected void onClickVoltar() {
-		// TODO: Implementar
-		System.out.println("==> onClickVoltar");
+	protected void onClickCancelar() {
+		this.nome.setText("");
+		this.telefone.setText("");
+		this.id.setText("");
+		this.setupVoltar();
+		System.out.println("==> onClickCancelar");
 	}
 
 	/**
-	 * Executa as tarefas para salvar a inclusão de um novo cliente
+	 * Executa as tarefas para confirmar a inclusão de um novo cliente
 	 */
-	protected void onClickSalvar() {
-		// TODO: Implementar
-		System.out.println("==> onClickSalvar");
+	protected void onClickConfirmar() {
+		String nomeCliente = nome.getText();
+		String telefoneCliente = telefone.getText();
+		int idCliente =  Integer.parseInt(id.getText());
+
+		if(!nomeCliente.isEmpty() && !telefoneCliente.isEmpty()) {
+			ClienteService upsert = new ClienteService();
+				if(this.clienteNovo) {	
+					upsert.cadastrarCliente(nomeCliente, telefoneCliente);
+					this.setupAdicionarCliente();	
+				} else {
+					upsert.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
+				}
+			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
+		}else{
+			JOptionPane.showMessageDialog(null, "Preencha o nome e o telefone!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}
+			
+		System.out.println("==> onClickConfirmar");
 	}
 
 }
