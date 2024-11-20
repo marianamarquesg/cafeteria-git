@@ -30,8 +30,8 @@ public class ClienteView extends JInternalFrame {
 	private JTextField nome;
 	private JFormattedTextField telefone;
 
-	private JButton btConfirmar;
-	private JButton btCancelar;
+	private JButton btSalvar;
+	private JButton btVoltar;
 	private JButton btNovoCliente;
 	private JButton btPesquisar;
 
@@ -87,25 +87,25 @@ public class ClienteView extends JInternalFrame {
 			e.printStackTrace();
 		}
 
-		btConfirmar = new JButton("Confirmar");
-		btConfirmar.addActionListener(new ActionListener() {
+		btSalvar = new JButton("Confirmar");
+		btSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				onClickConfirmar();
+				onClickSalvar();
 			}
 		});
-		btConfirmar.setBounds(434, 126, 105, 27);
-		getContentPane().add(btConfirmar);
+		btSalvar.setBounds(434, 126, 105, 27);
+		getContentPane().add(btSalvar);
 
-		btCancelar = new JButton("Cancelar");
-		btCancelar.addActionListener(new ActionListener() {
+		btVoltar = new JButton("Cancelar");
+		btVoltar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				onClickCancelar();
+				onClickVoltar();
 			}
 		});
-		btCancelar.setBounds(317, 126, 105, 27);
-		getContentPane().add(btCancelar);
+		btVoltar.setBounds(317, 126, 105, 27);
+		getContentPane().add(btVoltar);
 
 		btNovoCliente = new JButton("Novo Cliente");
 		btNovoCliente.addActionListener(new ActionListener() {
@@ -133,8 +133,8 @@ public class ClienteView extends JInternalFrame {
 	 */
 	public void setupConsultar() {
 		// configura os botões de ação
-		btConfirmar.setEnabled(false);
-		btCancelar.setEnabled(false);
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(false);
 		btNovoCliente.setVisible(true);
 		btPesquisar.setEnabled(true);
 
@@ -146,8 +146,8 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupClienteEncontrado() {
 		// configura os botões de ação
-		btConfirmar.setEnabled(true);
-		btCancelar.setEnabled(true);
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
 		btNovoCliente.setEnabled(false);
 		btPesquisar.setEnabled(false);
 
@@ -159,8 +159,8 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupVoltar() {
 		// configura os botões de ação
-		btConfirmar.setEnabled(true);
-		btCancelar.setEnabled(true);
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
 		btNovoCliente.setEnabled(true);
 		btPesquisar.setEnabled(true);
 
@@ -172,8 +172,8 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupAdicionarCliente() {
 		// configura os botões de ação
-		btConfirmar.setEnabled(true);
-		btCancelar.setEnabled(true);
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
 		btNovoCliente.setEnabled(false);
 		btPesquisar.setEnabled(false);
 
@@ -211,18 +211,18 @@ public class ClienteView extends JInternalFrame {
 	/**
 	 * Executa as tarefas para cancelar a inclusão de um cliente
 	 */
-	protected void onClickCancelar() {
+	protected void onClickVoltar() {
 		this.nome.setText("");
 		this.telefone.setText("");
 		this.id.setText("");
 		this.setupVoltar();
-		System.out.println("==> onClickCancelar");
+		System.out.println("==> onClickVoltar");
 	}
 
 	/**
 	 * Executa as tarefas para confirmar a inclusão de um novo cliente
 	 */
-	protected void onClickConfirmar() {
+	protected void onClickSalvar() {
 		String nomeCliente = nome.getText();
 		String telefoneCliente = telefone.getText();
 		int idCliente =  Integer.parseInt(id.getText());
@@ -240,7 +240,7 @@ public class ClienteView extends JInternalFrame {
 			JOptionPane.showMessageDialog(null, "Preencha o nome e o telefone!", "Sucesso", JOptionPane.ERROR_MESSAGE);
 		}
 			
-		System.out.println("==> onClickConfirmar");
+		System.out.println("==> onClickSalvar");
 	}
 
 }
