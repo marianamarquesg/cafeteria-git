@@ -1,0 +1,106 @@
+package cafeteria.vendas.produtos;
+
+import java.sql.Connection;
+import cafeteria.Conexao;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+
+public class ProdutoService implements IProdutoService {
+    Connection conn = Conexao.getConnection();
+
+    @Override
+    public Produto pesquisarProdutoPorId(int idProduto) {
+        Produto produto = null;
+        String pesquisarSQL = "SELECT id, nome, medida, preco FROM produto WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(pesquisarSQL);) {
+            stmt.setInt(1, idProduto);
+            ResultSet sw = stmt.executeQuery();
+            if (sw.next()) {
+                produto = new Produto();
+                produto.setNome(sw.getString(2));
+                produto.setMedida(this.converterdeIntParaUnidadeDeMedida(sw.getInt(3)));
+                produto.setPreco(sw.getDouble(4));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Nao foi possivel realizar a consulta: " + e.getMessage());
+        }
+        return produto;
+    }
+
+    public void cadastrarProduto (String nome, int id, UnidadeMedida medida, double preco) {
+        String cadastrarSQL = "INSERT INTO produto (nome, id, medida, preco) VALUES (?,?,?,?);";
+        try (PreparedStatement stmt = conn.prepareStatement(cadastrarSQL);) {
+            stmt.setString(1, nome);
+            stmt.setInt(2, id);
+            stmt.setInt(3, medida.getCodigo());
+            stmt.setDouble(4, preco);
+            stmt.execute();
+        } catch (SQLException e) {
+            System.err.println("Nao foi possivel realizar o cadastro: " + e.getMessage());
+        }
+    throw new UnsupportedOperationException("Unimplemented method 'cadastrarProduto'");
+    
+    }
+
+    public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco) {
+        String atualizarSQL = "UPDATE produto SET id = ?, nome = ?, medida = ?, preco = ? WHERE id = ?";
+		try (PreparedStatement stmt = conn.prepareStatement(atualizarSQL);) {
+			stmt.setInt(1, id);
+			stmt.setString(2, nome);  
+            stmt.setInt(3, medida.getCodigo());
+            stmt.setDouble(4, preco);
+            stmt.setInt(5, id);    
+			stmt.execute();
+		} catch (SQLException e) {
+			System.err.println("Nao foi possivel realizar a atualizacao: " + e.getMessage());
+		}
+     //   Conexao.close(conn);
+        throw new UnsupportedOperationException("Unimplemented method 'cadastrarProduto'");
+    }
+
+    public int converterUnidadeDeMedidaParaInt(UnidadeMedida unidadeMedida){
+        switch (unidadeMedida) {
+            case GARRAFA:
+                return 1;
+            case LATA:
+                return 2;
+            case LITRO:
+                return 3;
+            case UNIDADE:
+                return 4;
+            case FATIA:
+                return 5;
+            case PACOTE:
+                return 6;
+            case CAIXA:
+                return 7;
+        
+            default:
+                throw new RuntimeException("Inexistente");
+        }
+    }
+    public UnidadeMedida converterdeIntParaUnidadeDeMedida(int unidadeMedida){
+        switch (unidadeMedida) {
+            case 1:
+                return UnidadeMedida.GARRAFA;
+            case 2:
+                return UnidadeMedida.LATA;
+            case 3:
+                return UnidadeMedida.LITRO;
+            case 4:
+                return UnidadeMedida.UNIDADE;
+            case 5:
+                return UnidadeMedida.PACOTE;
+            case 6:
+                return UnidadeMedida.CAIXA;
+
+            default:
+                throw new RuntimeException("Inexistente");
+        }
+    }
+    
+
+
+}
