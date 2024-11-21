@@ -10,6 +10,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
@@ -39,6 +40,7 @@ public class ProdutoView extends JInternalFrame {
 
 	private IProdutoService service = null;
 
+	private Boolean produtoNovo = false;
 	/**
 	 * Cria a janela do CRUD do produto
 	 */
@@ -166,12 +168,61 @@ public class ProdutoView extends JInternalFrame {
 		estoque.setEnabled(false);
 	}
 
-	/**
-	 * Executa as tarefas para efetuar uma pesquisa com base no ID informado
-	 */
+	public void setupProdutoEncontrado() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoProduto.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		medida.setEnabled(true);
+		preco.setEnabled(true);
+	}
+
+	public void setupVoltar() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoProduto.setEnabled(true);
+		btPesquisar.setEnabled(true);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		medida.setEnabled(true);
+		preco.setEnabled(true);
+
+    }
+
+	public void setupAdicionarProduto() {
+		// configura os botões de ação
+		btSalvar.setEnabled(true);
+		btVoltar.setEnabled(true);
+		btNovoProduto.setEnabled(false);
+		btPesquisar.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		medida.setEnabled(true);
+		preco.setEnabled(true);
+	}
 	protected void onClickPesquisar() {
-		// TODO: Implementar
-		System.out.println("==> onClickPesquisar");
+		int idProduto = Integer.parseInt(id.getText());
+		Produto produto = this.service.pesquisarProdutoPorId(idProduto); //chama o produto service
+		if (produto != null) {
+			this.id.setText(String.valueOf(produto.getId()));
+			this.nome.setText(produto.getNome());
+			this.medida.setSelectedItem(produto.getMedida());
+			this.preco.setText(String.valueOf(produto.getPreco()));
+			this.setupProdutoEncontrado();
+			this.produtoNovo = false;
+		}else {
+			JOptionPane.showMessageDialog(null, "Nenhum produto encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}			
 	}
 
 	/**
@@ -179,23 +230,72 @@ public class ProdutoView extends JInternalFrame {
 	 * produto
 	 */
 	protected void onClickIncluirNovoProduto() {
-		// TODO: Implementar
+		this.setupAdicionarProduto();
+		this.produtoNovo = true;
 		System.out.println("==> onClickIncluirNovoProduto");
 	}
 
 	/**
 	 * Executa as tarefas para voltar a inclusão de um produto
 	 */
+
 	protected void onClickVoltar() {
-		// TODO: Implementar
-		System.out.println("==> onClickVoltar");
-	}
+	this.id.setText(""); 
+    this.nome.setText(""); 
+    this.medida.setSelectedItem(""); 
+    this.preco.setText("");
+	this.setupVoltar();
+	System.out.println("==> onClickVoltar");
+}
 
 	/**
 	 * Executa as tarefas para salvar a inclusão de um novo produto
 	 */
 	protected void onClickSalvar() {
-		// TODO: Implementar
-		System.out.println("==> onClickSalvar");
+		try {
+			// Converte os valores dos campos
+			int idProduto = Integer.parseInt(id.getText()); // Converte o ID para int
+			String nomeProduto = nome.getText(); // Obtém o nome do produto
+			UnidadeMedida medidaProduto = (UnidadeMedida) medida.getSelectedItem(); // Obtém o item selecionado no JComboBox
+			Double precoProduto = Double.parseDouble(preco.getText()); // Converte o preço para Double
+	
+			// Verificação dos campos
+			if (idProduto <= 0) { // Verifica se o ID é maior que 0
+				JOptionPane.showMessageDialog(null, "O campo ID não pode ser vazio ou inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+				return; // Interrompe a execução se o ID for inválido
+			}
+	
+			if (nomeProduto.isEmpty()) { // Verifica se o nome não está vazio
+				JOptionPane.showMessageDialog(null, "O campo Nome não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+	
+			if (medidaProduto == null) { // Verifica se a medida foi selecionada no JComboBox
+				JOptionPane.showMessageDialog(null, "Selecione uma medida válida!", "Erro", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+	
+			if (precoProduto <= 0) { // Verifica se o preço é maior que 0
+				JOptionPane.showMessageDialog(null, "O preço deve ser maior que zero!", "Erro", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+	
+			// Operações de cadastro ou atualização
+			ProdutoService upsert = new ProdutoService();
+			if (this.produtoNovo) {
+				// Cadastrar novo produto
+				upsert.cadastrarProduto(nomeProduto, idProduto, medidaProduto, precoProduto.doubleValue());
+				this.setupAdicionarProduto();
+			} else {
+				// Atualizar produto existente
+				upsert.atualizarProduto(nomeProduto, idProduto, medidaProduto, precoProduto.doubleValue());
+			}
+	
+			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+	
+		} catch (NumberFormatException e) {
+			// Captura erros de conversão para int ou Double
+			JOptionPane.showMessageDialog(null, "ID ou Preço inválido. Por favor, insira valores numéricos.", "Erro", JOptionPane.ERROR_MESSAGE);
+		}
 	}
-}
+	}
