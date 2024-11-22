@@ -3,6 +3,7 @@ package cafeteria.vendas.clientes;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import javax.swing.event.DocumentEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -10,6 +11,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentListener;
 import javax.swing.text.MaskFormatter;
 import javax.swing.JOptionPane;
 
@@ -36,7 +38,6 @@ public class ClienteView extends JInternalFrame {
 	private JButton btPesquisar;
 
 	private IClienteService service = null;
-
 	private Boolean clienteNovo = false;
 
 	/**
@@ -87,7 +88,38 @@ public class ClienteView extends JInternalFrame {
 			e.printStackTrace();
 		}
 
-		btSalvar = new JButton("Confirmar");
+
+	nome.getDocument().addDocumentListener(new DocumentListener() {
+		
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+
+		
+			btSalvar.setEnabled(true);
+		
+        System.out.println("Texto inserido: " + nome.getText());
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+		btSalvar.setEnabled(true);
+        System.out.println("Texto removido: " + nome.getText());
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        // Este método não é chamado para JTextField
+    }
+
+	// protected void verificaAlteracoes() {
+	// 	if(!this.clienteNovo) {
+	// 		btSalvar.setEnabled(true);
+	// 	}
+	// }
+
+});
+
+		btSalvar = new JButton("Salvar");
 		btSalvar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -97,7 +129,7 @@ public class ClienteView extends JInternalFrame {
 		btSalvar.setBounds(434, 126, 105, 27);
 		getContentPane().add(btSalvar);
 
-		btVoltar = new JButton("Cancelar");
+		btVoltar = new JButton("Voltar");
 		btVoltar.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -146,7 +178,7 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupClienteEncontrado() {
 		// configura os botões de ação
-		btSalvar.setEnabled(true);
+		btSalvar.setEnabled(false);
 		btVoltar.setEnabled(true);
 		btNovoCliente.setEnabled(false);
 		btPesquisar.setEnabled(false);
@@ -195,8 +227,8 @@ public class ClienteView extends JInternalFrame {
 			this.clienteNovo = false;
 		}else {
 			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
-		}			
-	}
+		}
+			}
 
 	/**
 	 * Executa as tarefas para preparar a interface para a inclusão de um novo
@@ -222,22 +254,24 @@ public class ClienteView extends JInternalFrame {
 	/**
 	 * Executa as tarefas para confirmar a inclusão de um novo cliente
 	 */
-	protected void onClickSalvar() {
-		String nomeCliente = nome.getText();
-		String telefoneCliente = telefone.getText();
-		int idCliente =  Integer.parseInt(id.getText());
+	protected void onClickSalvar() {  
+
+		String nomeCliente = nome.getText().isEmpty() ? "" : nome.getText();
+		String telefoneCliente = telefone.getText().isEmpty() || telefone.getText().equals("(__) _____-____") ? "" : telefone.getText();
 
 		if(!nomeCliente.isEmpty() && !telefoneCliente.isEmpty()) {
 			ClienteService upsert = new ClienteService();
 				if(this.clienteNovo) {	
-					upsert.cadastrarCliente(nomeCliente, telefoneCliente);
-					this.setupAdicionarCliente();	
+					upsert.cadastrarCliente(nomeCliente ,telefoneCliente);
 				} else {
+					int idCliente =  Integer.parseInt(id.getText());
 					upsert.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
 				}
+			this.setupAdicionarCliente();
 			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
+			this.setupVoltar();
 		}else{
-			JOptionPane.showMessageDialog(null, "Preencha o nome e o telefone!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Preencha o nome e/ou o telefone!", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 			
 		System.out.println("==> onClickSalvar");

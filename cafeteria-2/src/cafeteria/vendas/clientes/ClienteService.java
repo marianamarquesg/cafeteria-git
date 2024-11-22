@@ -39,7 +39,6 @@ public class ClienteService implements IClienteService {
 			System.err.println("Nao foi possivel realizar o cadastro: " + e.getMessage());
 		}
       //  Conexao.close(conn);
-        throw new UnsupportedOperationException("Unimplemented method 'cadastrarCliente'");
         
     }
 
@@ -54,25 +53,6 @@ public class ClienteService implements IClienteService {
 			System.err.println("Nao foi possivel realizar a atualizacao: " + e.getMessage());
 		}
      //   Conexao.close(conn);
-        throw new UnsupportedOperationException("Unimplemented method 'cadastrarCliente'");
     }
-    
-
-    // @Override
-    // public void cancelarPesquisa() {
-    //     throw new UnsupportedOperationException("Unimplemented method 'cancelarPesquisa'");
-    // }
-
-    // @Override
-    // public void confirmarInclusao() {
-    //     throw new UnsupportedOperationException("Unimplemented method 'confirmarInclusao'");
-    // }
-
-    // @Override
-    // public void incluirNovoCliente(String nome, int telefone, int id) {
-    //     // TODO Auto-generated method stub
-    //     throw new UnsupportedOperationException("Unimplemented method 'incluirNovoCliente'");
-    // }
-
 
 }
