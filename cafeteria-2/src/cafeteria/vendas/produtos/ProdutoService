@@ -4,6 +4,7 @@ import java.sql.Connection;
 import cafeteria.Conexao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import javax.swing.JOptionPane;
 import java.sql.ResultSet;
 
 public class ProdutoService implements IProdutoService {
@@ -12,52 +13,76 @@ public class ProdutoService implements IProdutoService {
     @Override
     public Produto pesquisarProdutoPorId(int idProduto) {
         Produto produto = null;
-        String pesquisarSQL = "SELECT id, nome, medida, preco FROM produto WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(pesquisarSQL);) {
+        String pesquisarSQL = "SELECT id, nome, medida, preco, estoque FROM produto WHERE id = ?";
+        
+        System.out.println("Executando consulta para ID: " + idProduto);  // Verifique o ID
+        try (PreparedStatement stmt = conn.prepareStatement(pesquisarSQL)) {
             stmt.setInt(1, idProduto);
             ResultSet sw = stmt.executeQuery();
+            
             if (sw.next()) {
                 produto = new Produto();
-                produto.setNome(sw.getString(2));
-                produto.setMedida(this.converterdeIntParaUnidadeDeMedida(sw.getInt(3)));
-                produto.setPreco(sw.getDouble(4));
+                produto.setId(sw.getInt("id"));
+                produto.setNome(sw.getString("nome"));
+                produto.setMedida(this.converterdeIntParaUnidadeDeMedida(sw.getInt("medida")));
+                produto.setPreco(sw.getDouble("preco"));
+                produto.setEstoque(sw.getDouble("estoque"));
+                System.out.println("Produto encontrado: " + produto.getNome());
+            } else {
+                System.out.println("Nenhum produto encontrado para o ID: " + idProduto);  // Verifique se entrou aqui
             }
-
         } catch (SQLException e) {
-            System.err.println("Nao foi possivel realizar a consulta: " + e.getMessage());
+            System.err.println("Erro ao consultar produto: " + e.getMessage());
         }
+        
+        if (produto == null) {
+            throw new RuntimeException("Produto Inexistente");  // Verifique se é este ponto que está gerando a exceção
+        }
+        
         return produto;
     }
 
-    public void cadastrarProduto (String nome, int id, UnidadeMedida medida, double preco) {
-        String cadastrarSQL = "INSERT INTO produto (nome, id, medida, preco) VALUES (?,?,?,?);";
-        try (PreparedStatement stmt = conn.prepareStatement(cadastrarSQL);) {
+    public void cadastrarProduto(String nome, UnidadeMedida medida, double preco, double estoque) {
+        String sql = "INSERT INTO produto (nome, medida, preco, estoque) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nome);
-            stmt.setInt(2, id);
-            stmt.setInt(3, medida.getCodigo());
-            stmt.setDouble(4, preco);
-            stmt.execute();
+            stmt.setInt(2, medida.getCodigo());
+            stmt.setDouble(3, preco);
+            stmt.setDouble(4, estoque);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Nao foi possivel realizar o cadastro: " + e.getMessage());
         }
-    throw new UnsupportedOperationException("Unimplemented method 'cadastrarProduto'");
-    
+
     }
 
-    public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco) {
-        String atualizarSQL = "UPDATE produto SET id = ?, nome = ?, medida = ?, preco = ? WHERE id = ?";
-		try (PreparedStatement stmt = conn.prepareStatement(atualizarSQL);) {
-			stmt.setInt(1, id);
-			stmt.setString(2, nome);  
-            stmt.setInt(3, medida.getCodigo());
-            stmt.setDouble(4, preco);
-            stmt.setInt(5, id);    
-			stmt.execute();
-		} catch (SQLException e) {
-			System.err.println("Nao foi possivel realizar a atualizacao: " + e.getMessage());
-		}
-     //   Conexao.close(conn);
-        throw new UnsupportedOperationException("Unimplemented method 'cadastrarProduto'");
+    public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco, double estoque) {
+        String sql = "UPDATE produto SET nome = ?, medida = ?, preco = ?, estoque = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            // Logs para depuração
+            System.out.println("Tentando atualizar produto:");
+            System.out.println("ID: " + id);
+            System.out.println("Nome: " + nome);
+            System.out.println("Medida: " + medida.getCodigo());
+            System.out.println("Preço: " + preco);
+            System.out.println("Estoque: " + estoque);
+    
+            stmt.setString(1, nome);
+            stmt.setInt(2, medida.getCodigo());
+            stmt.setDouble(3, preco);
+            stmt.setDouble(4, estoque);
+            stmt.setInt(5, id);
+    
+            int rowsAffected = stmt.executeUpdate();
+    
+            if (rowsAffected == 0) {
+                JOptionPane.showMessageDialog(null, "Produto não encontrado para atualizar!", "Erro", JOptionPane.ERROR_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (SQLException e) {
+            System.err.println("Não foi possível realizar a atualização: " + e.getMessage());
+        }
     }
 
     public int converterUnidadeDeMedidaParaInt(UnidadeMedida unidadeMedida){
