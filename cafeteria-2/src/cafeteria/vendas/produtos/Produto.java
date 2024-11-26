@@ -6,6 +6,7 @@ public class Produto {
      private String nome;
      private UnidadeMedida medida;
      private double preco;
+     private double estoque;
 
     //construtores 
 
@@ -27,10 +28,17 @@ public class Produto {
     public void setMedida(UnidadeMedida medida) {
         this.medida = medida;
     }
-    public Double getPreco() {
+    public double getPreco() {
         return preco;
     }
-    public void setPreco(Double preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public double getEstoque() {
+        return estoque;
+    }
+    public void setEstoque(double estoque) {
+        this.estoque = estoque;
     }
 }
