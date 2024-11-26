@@ -13,13 +13,16 @@ public class ProdutoService implements IProdutoService {
     @Override
     public Produto pesquisarProdutoPorId(int idProduto) {
         Produto produto = null;
-        String pesquisarSQL = "SELECT id, nome, medida, preco, estoque FROM produto WHERE id = ?";
-        
-        System.out.println("Executando consulta para ID: " + idProduto);  // Verifique o ID
-        try (PreparedStatement stmt = conn.prepareStatement(pesquisarSQL)) {
-            stmt.setInt(1, idProduto);
+        String sql = "SELECT id, nome, medida, preco, estoque FROM produto WHERE id = ?";
+    
+        System.out.println("Executando consulta para ID: " + idProduto); // Verificando o ID antes de consultar
+    
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idProduto);  
+            System.out.println("Consulta SQL: " + stmt);
+    
             ResultSet sw = stmt.executeQuery();
-            
+    
             if (sw.next()) {
                 produto = new Produto();
                 produto.setId(sw.getInt("id"));
@@ -27,18 +30,19 @@ public class ProdutoService implements IProdutoService {
                 produto.setMedida(this.converterdeIntParaUnidadeDeMedida(sw.getInt("medida")));
                 produto.setPreco(sw.getDouble("preco"));
                 produto.setEstoque(sw.getDouble("estoque"));
+    
                 System.out.println("Produto encontrado: " + produto.getNome());
             } else {
-                System.out.println("Nenhum produto encontrado para o ID: " + idProduto);  // Verifique se entrou aqui
+                System.out.println("Nenhum produto encontrado para o ID: " + idProduto); // Log quando não encontrar
             }
         } catch (SQLException e) {
             System.err.println("Erro ao consultar produto: " + e.getMessage());
         }
-        
+    
         if (produto == null) {
-            throw new RuntimeException("Produto Inexistente");  // Verifique se é este ponto que está gerando a exceção
+            throw new RuntimeException("Produto Inexistente"); // Lançando exceção se não encontrar o produto
         }
-        
+    
         return produto;
     }
 
@@ -117,15 +121,14 @@ public class ProdutoService implements IProdutoService {
             case 4:
                 return UnidadeMedida.UNIDADE;
             case 5:
-                return UnidadeMedida.PACOTE;
+                return UnidadeMedida.FATIA;
             case 6:
+                return UnidadeMedida.PACOTE;
+            case 7:
                 return UnidadeMedida.CAIXA;
 
             default:
                 throw new RuntimeException("Inexistente");
         }
     }
-    
-
-
 }
