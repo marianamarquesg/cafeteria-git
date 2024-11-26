@@ -1,1 +1,52 @@
+package cafeteria.vendas.produtos;
 
+public class EstoqueProduto extends Produto {
+
+    private double estoque;
+
+    // Construtor.
+    public EstoqueProduto(int estoqueInicial) {
+        if (estoqueInicial < 0) {
+            throw new IllegalArgumentException("Estoque inicial não pode ser negativo.");
+        } else {
+            this.estoque = estoqueInicial;
+        }
+    }
+   
+    public double getEstoque() {
+        return estoque;
+    }
+
+    // Adiciona quantidade ao estoque
+    public void adicionarEstoque(int quantidade) {
+        if (quantidade > 0) {
+            estoque += quantidade;
+        } else {
+            System.out.println("A quantidade a ser adicionada deve ser positiva.");
+        }
+    }
+
+    // Reduz o estoque de acordo com a quantidade solicitada
+    public void reduzirEstoque(int quantidade) {
+        if (quantidade <= 0) {
+            System.out.println("A quantidade a ser retirada deve ser positiva.");
+            return;
+        }
+
+        if (quantidade <= estoque) {
+            estoque -= quantidade;
+        } else {
+            System.out.println("Estoque insuficiente. Não é possível reduzir a quantidade.");
+        }
+    }
+
+    // Método para verificar se o estoque tem a quantidade desejada
+    public boolean verificarEstoqueSuficiente(int quantidade) {
+        return estoque >= quantidade;
+    }
+
+    // Método para exibir o estoque
+    public void exibirEstoque() {
+        System.out.println("Estoque atual: " + estoque);
+    }
+}
