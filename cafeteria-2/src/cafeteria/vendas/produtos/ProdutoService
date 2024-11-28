@@ -29,7 +29,12 @@ public class ProdutoService implements IProdutoService {
                 produto.setNome(sw.getString("nome"));
                 produto.setMedida(this.converterdeIntParaUnidadeDeMedida(sw.getInt("medida")));
                 produto.setPreco(sw.getDouble("preco"));
-                produto.setEstoque(sw.getDouble("estoque"));
+                if (sw.getObject("estoque") != null) {
+                    produto.setEstoque(sw.getInt("estoque"));
+                } else {
+                    produto.setEstoque(-1);
+                }
+                
     
                 System.out.println("Produto encontrado: " + produto.getNome());
             } else {
@@ -46,13 +51,17 @@ public class ProdutoService implements IProdutoService {
         return produto;
     }
 
-    public void cadastrarProduto(String nome, UnidadeMedida medida, double preco, double estoque) {
+    public void cadastrarProduto(String nome, UnidadeMedida medida, double preco, int estoque) {
         String sql = "INSERT INTO produto (nome, medida, preco, estoque) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, nome);
             stmt.setInt(2, medida.getCodigo());
             stmt.setDouble(3, preco);
-            stmt.setDouble(4, estoque);
+            if (estoque == -1) {
+                stmt.setObject(4, null);
+            } else {
+                stmt.setInt(4, estoque);
+            }
             stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("Nao foi possivel realizar o cadastro: " + e.getMessage());
@@ -60,7 +69,7 @@ public class ProdutoService implements IProdutoService {
 
     }
 
-    public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco, double estoque) {
+    public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco, int estoque) {
         String sql = "UPDATE produto SET nome = ?, medida = ?, preco = ?, estoque = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             // Logs para depuração
@@ -74,15 +83,17 @@ public class ProdutoService implements IProdutoService {
             stmt.setString(1, nome);
             stmt.setInt(2, medida.getCodigo());
             stmt.setDouble(3, preco);
-            stmt.setDouble(4, estoque);
+            if (estoque == -1) {
+                stmt.setObject(4, null);
+            } else {
+                stmt.setInt(4, estoque);
+            }
             stmt.setInt(5, id);
     
             int rowsAffected = stmt.executeUpdate();
     
             if (rowsAffected == 0) {
                 JOptionPane.showMessageDialog(null, "Produto não encontrado para atualizar!", "Erro", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(null, "Produto atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (SQLException e) {
             System.err.println("Não foi possível realizar a atualização: " + e.getMessage());
