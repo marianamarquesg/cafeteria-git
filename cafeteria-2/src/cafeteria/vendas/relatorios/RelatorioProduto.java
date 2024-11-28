@@ -17,16 +17,16 @@ import cafeteria.vendas.produtos.Produto;
 import cafeteria.vendas.produtos.ProdutoService;
 import cafeteria.vendas.produtos.UnidadeMedida;
 
-public class RelatorioProduto {
+public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
       Connection conn = Conexao.getConnection();
     String nome = null;
 
     public void exportar(File destino) {
-        List<Cliente> produtos = this.listarProdutos();
+        List<Produto> produtos = this.listarProdutos();
 
         try(PrintWriter writer = new PrintWriter(new PrintWriter(destino))) {
 			writer.println("ID - NOME - MEDIDA - PRECO - ESTOQUE");        
-            for (Cliente produto : produtos) {
+            for (Produto produto : produtos) {
                 writer.printf("%d - %s - %s%n", produto.getId(), produto.getNome(), produto.getMedida(), produto.getPreco(), produto.getEstoque());
             }
 		} catch (IOException e) {
@@ -34,7 +34,7 @@ public class RelatorioProduto {
 		}
     }
 
-    public List<Cliente> listarProdutos() {
+    public List<Produto> listarProdutos() {
         Produto produto = null; 
         ProdutoService prdService = new ProdutoService();
          List<Produto> produtos = new ArrayList<>();
@@ -59,8 +59,6 @@ public class RelatorioProduto {
          return produtos;
      }
 
-
-        @Override
         public String getNomeRelatorio() {
              return "Relatorio Produto";
         }

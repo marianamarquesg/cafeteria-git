@@ -20,6 +20,8 @@ import cafeteria.vendas.clientes.ClienteView;
 import cafeteria.vendas.clientes.IClienteService;
 import cafeteria.vendas.produtos.IProdutoService;
 import cafeteria.vendas.produtos.ProdutoView;
+import cafeteria.vendas.relatorios.RelatorioCliente;
+import cafeteria.vendas.relatorios.RelatorioProduto;
 import cafeteria.vendas.relatorios.RelatorioExportavelEmArquivoTexto;
 import cafeteria.vendas.relatorios.RelatorioView;
 
@@ -166,7 +168,8 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO: Instanciar e passar o exportador correto para o método
-				createAndShowFrameExportarRelatorio(null);
+				
+				createAndShowFrameExportarRelatorio( new RelatorioCliente());
 			}
 		});
 		submenu.add(menuItem);
@@ -201,7 +204,8 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO: Instanciar e passar o exportador correto para o método
-				createAndShowFrameExportarRelatorio(null);
+				createAndShowFrameExportarRelatorio( new RelatorioProduto());
+
 			}
 		});
 		submenu.add(menuItem);

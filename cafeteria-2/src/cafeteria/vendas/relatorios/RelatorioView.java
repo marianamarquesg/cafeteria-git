@@ -131,7 +131,7 @@ public class RelatorioView extends JInternalFrame {
 		//String destino = destinoCaminhoAbsoluto.getText();
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado + " " + nomeRelatorio.getText());
 
-		//this.exportador.exportar(destinoSelecionado, nomeRelatorio);
+		this.exportador.exportar(destinoSelecionado);
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado);
 	}
 
