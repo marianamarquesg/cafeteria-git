@@ -176,7 +176,7 @@ public class ProdutoView extends JInternalFrame {
 		btPesquisar.setEnabled(false);
 
 		// configura o comportamento dos campos
-		id.setEnabled(false);
+		id.setEnabled(true);
 		nome.setEnabled(true);
 		medida.setEnabled(true);
 		preco.setEnabled(true);
@@ -190,7 +190,7 @@ public class ProdutoView extends JInternalFrame {
 		btPesquisar.setEnabled(true);
 
 		// configura o comportamento dos campos
-		id.setEnabled(false);
+		id.setEnabled(true);
 		nome.setEnabled(true);
 		medida.setEnabled(true);
 		preco.setEnabled(true);
@@ -254,14 +254,13 @@ public class ProdutoView extends JInternalFrame {
 	 */
 
 	protected void onClickVoltar() {
-	this.id.setText(""); 
-    this.nome.setText(""); 
-    this.medida.setSelectedItem(""); 
-    this.preco.setText("");
-	this.setupVoltar();
-	System.out.println("==> onClickVoltar");
+		this.id.setText(""); 
+		this.nome.setText(""); 
+		this.medida.setSelectedItem("");
+		this.preco.setText("");
+		this.setupVoltar();
+		System.out.println("==> onClickVoltar");
 }
-
 	/**
 	 * Executa as tarefas para salvar a inclusão de um novo produto
 	 */
