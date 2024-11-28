@@ -176,7 +176,7 @@ public class ProdutoView extends JInternalFrame {
 		btPesquisar.setEnabled(false);
 
 		// configura o comportamento dos campos
-		id.setEnabled(true);
+		id.setEnabled(false);
 		nome.setEnabled(true);
 		medida.setEnabled(true);
 		preco.setEnabled(true);
@@ -222,7 +222,10 @@ public class ProdutoView extends JInternalFrame {
 				this.nome.setText(produto.getNome());
 				this.medida.setSelectedItem(produto.getMedida());
 				this.preco.setText(String.valueOf(produto.getPreco()));
-				this.estoque.setText(String.valueOf(produto.getEstoque()));
+				if (produto.getEstoque()>= 0) {
+					this.estoque.setText(String.valueOf(produto.getEstoque()));
+					this.temEstoque.setSelected(true);
+				}
 				this.setupProdutoEncontrado();
 				this.produtoNovo = false;
 				System.out.println("Produto exibido com sucesso.");
@@ -258,9 +261,12 @@ public class ProdutoView extends JInternalFrame {
 		this.nome.setText(""); 
 		this.medida.setSelectedItem("");
 		this.preco.setText("");
+		this.estoque.setText("");
+		this.temEstoque.setSelected(false);
 		this.setupVoltar();
 		System.out.println("==> onClickVoltar");
 }
+
 	/**
 	 * Executa as tarefas para salvar a inclusão de um novo produto
 	 */
@@ -312,7 +318,7 @@ public class ProdutoView extends JInternalFrame {
 				return; // Interrompe a execução
 			}
 	
-			double estoqueProduto = Double.parseDouble(estoqueText);
+			int estoqueProduto = 0;
 	
 			if (estoqueProduto < 0) {
 				JOptionPane.showMessageDialog(null, "O estoque não pode ser negativo!", "Erro", JOptionPane.ERROR_MESSAGE);
