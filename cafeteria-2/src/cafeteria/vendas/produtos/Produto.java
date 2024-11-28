@@ -6,9 +6,9 @@ public class Produto {
      private String nome;
      private UnidadeMedida medida;
      private double preco;
-     private double estoque;
+     private int estoque;
 
-    //construtores 
+    //construtores getters e setters
 
     public int getId() {
         return id;
@@ -35,10 +35,10 @@ public class Produto {
         this.preco = preco;
     }
 
-    public double getEstoque() {
+    public int getEstoque() {
         return estoque;
     }
-    public void setEstoque(double estoque) {
+    public void setEstoque(int estoque) {
         this.estoque = estoque;
     }
 }
