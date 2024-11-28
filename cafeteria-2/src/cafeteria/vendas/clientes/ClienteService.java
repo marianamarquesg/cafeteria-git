@@ -4,6 +4,7 @@ import java.sql.Connection;
 import cafeteria.Conexao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.sql.ResultSet;
 
 public class ClienteService implements IClienteService {
@@ -24,7 +25,7 @@ public class ClienteService implements IClienteService {
             } catch (SQLException e) {
                 System.err.println("Nao foi possivel realizar a consulta: " + e.getMessage());
             }
-      //      Conexao.close(conn);
+            Conexao.close(conn);
             return cliente;     
     }
 
@@ -38,7 +39,7 @@ public class ClienteService implements IClienteService {
 		} catch (SQLException e) {
 			System.err.println("Nao foi possivel realizar o cadastro: " + e.getMessage());
 		}
-      //  Conexao.close(conn);
+        Conexao.close(conn);
         
     }
 
@@ -52,7 +53,8 @@ public class ClienteService implements IClienteService {
 		} catch (SQLException e) {
 			System.err.println("Nao foi possivel realizar a atualizacao: " + e.getMessage());
 		}
-     //   Conexao.close(conn);
+        Conexao.close(conn);
     }
+
 
 }

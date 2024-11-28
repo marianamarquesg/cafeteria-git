@@ -72,6 +72,10 @@ public class ClienteView extends JInternalFrame {
 		getContentPane().add(nome);
 		nome.setColumns(10);
 
+	
+
+
+
 		JLabel lbTelefone = new JLabel("Telefone:");
 		lbTelefone.setBounds(31, 106, 60, 17);
 		getContentPane().add(lbTelefone);
@@ -228,7 +232,8 @@ public class ClienteView extends JInternalFrame {
 		}else {
 			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
 		}
-			}
+		
+	}
 
 	/**
 	 * Executa as tarefas para preparar a interface para a inclusão de um novo
@@ -260,12 +265,12 @@ public class ClienteView extends JInternalFrame {
 		String telefoneCliente = telefone.getText().isEmpty() || telefone.getText().equals("(__) _____-____") ? "" : telefone.getText();
 
 		if(!nomeCliente.isEmpty() && !telefoneCliente.isEmpty()) {
-			ClienteService upsert = new ClienteService();
+		//	ClienteService upsert = new ClienteService();
 				if(this.clienteNovo) {	
-					upsert.cadastrarCliente(nomeCliente ,telefoneCliente);
+					this.service.cadastrarCliente(nomeCliente ,telefoneCliente);
 				} else {
 					int idCliente =  Integer.parseInt(id.getText());
-					upsert.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
+					this.service.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
 				}
 			this.setupAdicionarCliente();
 			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	

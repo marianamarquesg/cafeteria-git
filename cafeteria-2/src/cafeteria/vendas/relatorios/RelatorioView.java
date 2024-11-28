@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
@@ -51,9 +52,9 @@ public class RelatorioView extends JInternalFrame {
 		nomeRelatorio.setBounds(109, 38, 430, 21);
 		getContentPane().add(nomeRelatorio);
 		nomeRelatorio.setColumns(10);
-		nomeRelatorio.setEditable(false);
+		nomeRelatorio.setEditable(true);
 		// TODO: Descomentar a linha abaixo quando já existir um exportador criado na TelaPricipal
-		//nomeRelatorio.setText(exportador.getNomeRelatorio());
+		nomeRelatorio.setText(exportador.getNomeRelatorio());
 
 		JLabel lbDestino = new JLabel("Destino:");
 		lbDestino.setBounds(31, 73, 60, 17);
@@ -126,8 +127,12 @@ public class RelatorioView extends JInternalFrame {
 	 * Executa as tarefas para exportar a exportação do relatório
 	 */
 	protected void onClickExportar() {
-		// TODO: Implementar
-		System.out.println("==> onClickExportar");
+		//String nome = ;
+		//String destino = destinoCaminhoAbsoluto.getText();
+		System.out.println("==> onClickExportar" + " " + destinoSelecionado + " " + nomeRelatorio.getText());
+
+		//this.exportador.exportar(destinoSelecionado, nomeRelatorio);
+		System.out.println("==> onClickExportar" + " " + destinoSelecionado);
 	}
 
 }
