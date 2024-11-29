@@ -2,7 +2,7 @@ package cafeteria.vendas.produtos;
 
 public class EstoqueProduto extends Produto {
 
-    private double estoque;
+    private int estoque;
 
     // Construtor.
     public EstoqueProduto(int estoqueInicial) {
@@ -13,7 +13,7 @@ public class EstoqueProduto extends Produto {
         }
     }
    
-    public double getEstoque() {
+    public int getEstoque() {
         return estoque;
     }
 
