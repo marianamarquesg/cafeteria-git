@@ -43,9 +43,10 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
              ResultSet rs = stmt.executeQuery();
               while (rs.next()) {
                 produto = new Produto();
-                produto.setNome(rs.getString(1));
-                produto.setMedida(prdService.converterdeIntParaUnidadeDeMedida(rs.getInt(2)));              
-                produto.setPreco(rs.getDouble(3));
+                produto.setId(rs.getInt(1));
+                produto.setNome(rs.getString(2));
+                produto.setMedida(prdService.converterdeIntParaUnidadeDeMedida(rs.getInt(3)));              
+                produto.setPreco(rs.getDouble(4));
 
            //     produto.setEstoque(rs.getInt(4));
                 produtos.add(produto);
@@ -53,7 +54,7 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
              rs.close();
              rs = null;
          } catch (SQLException e) {
-             System.err.println("Nao foi possivel realizar a atualizacao: " + e.getMessage());
+             System.err.println("Nao foi possivel retornar a lista de produtos: " + e.getMessage());
          }
          Conexao.close(conn);
          return produtos;
