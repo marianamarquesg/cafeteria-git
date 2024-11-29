@@ -38,7 +38,7 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
         Produto produto = null; 
         ProdutoService prdService = new ProdutoService();
          List<Produto> produtos = new ArrayList<>();
-         String listarSQL = "SELECT id, nome, medida, preco, estoque FROM cliente";
+         String listarSQL = "SELECT id, nome, medida, preco, estoque FROM produto";
          try (PreparedStatement stmt = conn.prepareStatement(listarSQL);) {
              ResultSet rs = stmt.executeQuery();
               while (rs.next()) {
