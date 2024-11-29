@@ -272,7 +272,6 @@ public class ProdutoView extends JInternalFrame {
 	 */
 	protected void onClickSalvar() {
 		try {
-
 			String idText = id.getText().trim();
 			int idProduto = 0;
 	
@@ -287,11 +286,10 @@ public class ProdutoView extends JInternalFrame {
 			String precoText = preco.getText().trim();
 			if (precoText.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "O campo Preço não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
-				return; 
+				return;
 			}
 	
 			precoText = precoText.replace(",", ".");
-	
 			double precoProduto = Double.parseDouble(precoText);
 	
 			if (precoProduto <= 0) {
@@ -310,20 +308,25 @@ public class ProdutoView extends JInternalFrame {
 				JOptionPane.showMessageDialog(null, "Selecione uma medida válida!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
-			String estoqueText = estoque.getText().trim();
 	
-
+			String estoqueText = estoque.getText().trim();
 			if (estoqueText.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "O campo Estoque não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
 	
-			int estoqueProduto = 0;
-	
-			if (estoqueProduto < 0) {
-				JOptionPane.showMessageDialog(null, "O estoque não pode ser negativo!", "Erro", JOptionPane.ERROR_MESSAGE);
+			int estoqueProduto;
+			try {
+				estoqueProduto = Integer.parseInt(estoqueText); // Conversão do texto para inteiro
+				if (estoqueProduto < 0) {
+					JOptionPane.showMessageDialog(null, "O estoque não pode ser negativo!", "Erro", JOptionPane.ERROR_MESSAGE);
+					return; // Interrompe a execução
+				}
+			} catch (NumberFormatException e) {
+				JOptionPane.showMessageDialog(null, "O valor do estoque deve ser um número inteiro válido!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
+	
 			ProdutoService upsert = new ProdutoService();
 			if (this.produtoNovo) {
 				upsert.cadastrarProduto(nomeProduto, medidaProduto, precoProduto, estoqueProduto);
@@ -338,4 +341,4 @@ public class ProdutoView extends JInternalFrame {
 		}
 	}
 
-	}
+}
