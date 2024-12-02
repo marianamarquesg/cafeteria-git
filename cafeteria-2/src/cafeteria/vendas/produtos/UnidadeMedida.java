@@ -1,5 +1,6 @@
 package cafeteria.vendas.produtos;
 
+
 public enum UnidadeMedida {
     UNIDADE(1),
     LATA(2),

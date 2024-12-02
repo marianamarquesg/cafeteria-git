@@ -72,7 +72,7 @@ public class ProdutoService implements IProdutoService {
     public void atualizarProduto(String nome, int id, UnidadeMedida medida, double preco, int estoque) {
         String sql = "UPDATE produto SET nome = ?, medida = ?, preco = ?, estoque = ? WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // Logs para depuração
+           
             System.out.println("Tentando atualizar produto:");
             System.out.println("ID: " + id);
             System.out.println("Nome: " + nome);

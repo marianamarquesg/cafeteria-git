@@ -266,7 +266,6 @@ public class ProdutoView extends JInternalFrame {
 		this.setupVoltar();
 		System.out.println("==> onClickVoltar");
 }
-
 	/**
 	 * Executa as tarefas para salvar a inclusão de um novo produto
 	 */
