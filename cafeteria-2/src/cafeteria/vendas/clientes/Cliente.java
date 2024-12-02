@@ -7,8 +7,6 @@ public class Cliente {
 	private String nome;
 	private String telefone;
 	private int id;
-	private ArrayList<Cliente> clientes;
-
 
 	//private ArrayList<Registro> registros;
 	
@@ -41,7 +39,4 @@ public class Cliente {
         return id;
     }
 
-	public void setClientes(ArrayList<Cliente> clientes) {
-		this.clientes = clientes;
-	}
 }

@@ -11,11 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cafeteria.Conexao;
-import cafeteria.vendas.clientes.Cliente;
-import cafeteria.vendas.produtos.IProdutoService;
 import cafeteria.vendas.produtos.Produto;
 import cafeteria.vendas.produtos.ProdutoService;
-import cafeteria.vendas.produtos.UnidadeMedida;
 
 public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
       Connection conn = Conexao.getConnection();
@@ -27,7 +24,12 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
         try(PrintWriter writer = new PrintWriter(new PrintWriter(destino))) {
 			writer.println("ID - NOME - MEDIDA - PRECO - ESTOQUE");        
             for (Produto produto : produtos) {
-                writer.printf("%d - %s - %s%n", produto.getId(), produto.getNome(), produto.getMedida(), produto.getPreco(), produto.getEstoque());
+                writer.printf("%d - %s - %s - %.2f - %d%n", 
+                produto.getId(), 
+                produto.getNome(), 
+                produto.getMedida(),
+                produto.getPreco(), 
+                produto.getEstoque());
             }
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -47,8 +49,7 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
                 produto.setNome(rs.getString(2));
                 produto.setMedida(prdService.converterdeIntParaUnidadeDeMedida(rs.getInt(3)));              
                 produto.setPreco(rs.getDouble(4));
-
-           //     produto.setEstoque(rs.getInt(4));
+                produto.setEstoque(rs.getInt(5));
                 produtos.add(produto);
              }
              rs.close();

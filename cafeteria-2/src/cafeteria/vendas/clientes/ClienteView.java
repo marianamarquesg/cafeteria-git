@@ -204,6 +204,10 @@ public class ClienteView extends JInternalFrame {
 		id.setEnabled(true);
 		nome.setEnabled(true);
 		telefone.setEnabled(true);
+
+		this.nome.setText("");
+		this.telefone.setText("");
+		this.id.setText("");
 	}
 
 	public void setupAdicionarCliente() {
@@ -249,9 +253,6 @@ public class ClienteView extends JInternalFrame {
 	 * Executa as tarefas para cancelar a inclusão de um cliente
 	 */
 	protected void onClickVoltar() {
-		this.nome.setText("");
-		this.telefone.setText("");
-		this.id.setText("");
 		this.setupVoltar();
 		System.out.println("==> onClickVoltar");
 	}
@@ -275,6 +276,7 @@ public class ClienteView extends JInternalFrame {
 			this.setupAdicionarCliente();
 			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
 			this.setupVoltar();
+
 		}else{
 			JOptionPane.showMessageDialog(null, "Preencha o nome e/ou o telefone!", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
