@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -28,9 +29,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
+import cafeteria.vendas.clientes.Cliente;
+import cafeteria.vendas.clientes.ClienteView;
 import cafeteria.vendas.clientes.IClienteService;
 import cafeteria.vendas.produtos.IProdutoService;
 import cafeteria.vendas.produtos.Produto;
+import cafeteria.vendas.produtos.ProdutoService;
+import cafeteria.vendas.produtos.UnidadeMedida;
 
 public class VendaView extends JInternalFrame {
 
@@ -56,7 +61,8 @@ public class VendaView extends JInternalFrame {
 	private JFormattedTextField quantidade;
 	private JFormattedTextField desconto;
 	private JFormattedTextField totalVenda;
-	private JTextField medida;
+	//private JTextField medida;
+	private JComboBox<UnidadeMedida> medida;
 
 	private JTable table;
 	private DefaultTableModel model;
@@ -118,20 +124,35 @@ public class VendaView extends JInternalFrame {
 		getContentPane().add(lbProduto);
 
 		// TODO: Carregar uma lista dos produtos cadastrados
+
 		List<Produto> produtos = new ArrayList<>();
+		this.produtoService = new ProdutoService();
+	//	produtos = this.produtoService.listarProdutos(); 
+	// Inicialize o JComboBox antes de usá-lo
 		produto = new JComboBox<>(produtos.toArray(new Produto[0]));
 		produto.setBounds(109, 104, 600, 21);
 		getContentPane().add(produto);
+
+		// Agora pode usar setSelectedItem sem problemas
+		if (!produtos.isEmpty()) {
+			produto.setSelectedItem(produtos.get(0));  // Seleciona o primeiro item como default
+		}
+		
 		produto.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent event) {
 				if (event.getStateChange() == ItemEvent.SELECTED) {
 					Produto produtoSelecionado = (Produto) event.getItem();
-					// TODO: Completar o código abaixo para atualizar o valor da medida
-					// medida.setText(produtoSelecionado);
+		
+					// Atualiza a medida do produto selecionad
+                //    medida = new JComboBox<>(UnidadeMedida.values());
+
+					medida.setSelectedItem(produtoSelecionado.getMedida());
+
 				}
 			}
 		});
+		
 
 		btConfirmar = new JButton("Registrar Venda");
 		btConfirmar.addActionListener(new ActionListener() {
@@ -171,10 +192,14 @@ public class VendaView extends JInternalFrame {
 		lbQuantidade.setBounds(31, 172, 79, 17);
 		getContentPane().add(lbQuantidade);
 
-		medida = new JTextField();
+		//medida = new JTextField();
+		medida = new JComboBox<>(UnidadeMedida.values());
+
 		medida.setBounds(109, 137, 114, 21);
 		getContentPane().add(medida);
-		medida.setColumns(10);
+		medida.setBounds(109, 104, 114, 21);
+
+		//medida.setColumns(10);
 		medida.setEditable(false);
 
 		NumberFormat integerFormat = NumberFormat.getIntegerInstance();
@@ -308,7 +333,6 @@ public class VendaView extends JInternalFrame {
 	 * Prepara o frame para a ação de registrar uma venda
 	 */
 	public void setupRegistrarNovaVenda() {
-		// configura os botões de ação
 		btConfirmar.setEnabled(false);
 		btCancelar.setEnabled(false);
 		btBuscarCliente.setEnabled(true);
@@ -322,12 +346,25 @@ public class VendaView extends JInternalFrame {
 		desconto.setEditable(false);
 	}
 
+	public void setupClienteEncontrado() {
+		btCancelar.setEnabled(false);
+		produto.setEnabled(true);
+		quantidade.setEditable(true);
+		desconto.setEditable(true);
+	}
+
 	/**
 	 * Executa as tarefas para efetuar uma pesquisa com base no ID cliente informado
 	 */
 	protected void onClickBuscarCliente() {
-		// TODO: Implementar
-		System.out.println("==> onClickBuscarCliente");
+		int idCliente =  Integer.parseInt(id.getText());
+		Cliente cliente = this.clienteService.pesquisarClientePorId(idCliente); 
+		if(cliente != null) {
+			this.nomeCliente.setText(cliente.getNome());
+			this.setupClienteEncontrado();
+		}else {
+			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	/**
