@@ -13,6 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+
+import javax.swing.event.DocumentListener;
 
 public class ProdutoView extends JInternalFrame {
 
@@ -147,6 +150,87 @@ public class ProdutoView extends JInternalFrame {
 		temEstoque = new JCheckBox("Tem estoque?");
 		temEstoque.setBounds(26, 166, 114, 25);
 		getContentPane().add(temEstoque);
+
+		nome.getDocument().addDocumentListener(new DocumentListener() {
+		
+			@Override
+			public void insertUpdate(DocumentEvent e) {	
+				btSalvar.setEnabled(true);
+				System.out.println("Texto inserido: " + nome.getText());
+			}
+		
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				btSalvar.setEnabled(true);
+				System.out.println("Texto removido: " + nome.getText());
+			}
+		
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// Este método não é chamado para JTextField
+			}
+		
+		});
+
+		preco.getDocument().addDocumentListener(new DocumentListener() {
+		
+			@Override
+			public void insertUpdate(DocumentEvent e) {	
+				btSalvar.setEnabled(true);
+				System.out.println("Texto inserido: " + nome.getText());
+			}
+		
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				btSalvar.setEnabled(true);
+				System.out.println("Texto removido: " + nome.getText());
+			}
+		
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// Este método não é chamado para JTextField
+			}
+		
+		});
+
+		estoque.getDocument().addDocumentListener(new DocumentListener() {
+		
+			@Override
+			public void insertUpdate(DocumentEvent e) {	
+				btSalvar.setEnabled(true);
+				System.out.println("Texto inserido: " + nome.getText());
+			}
+		
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				btSalvar.setEnabled(true);
+				System.out.println("Texto removido: " + nome.getText());
+			}
+		
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				// Este método não é chamado para JTextField
+			}
+		
+		});
+
+		temEstoque.addItemListener(e -> {
+			boolean selecionado = temEstoque.isSelected(); 
+		
+			if (selecionado) {
+				// Se o checkbox está marcado (tem estoque)
+				System.out.println("Produto tem estoque.");
+				estoque.setEnabled(true);
+
+			} else {
+				// Se o checkbox não está marcado (não tem estoque)
+				System.out.println("Produto não tem estoque.");
+				estoque.setEnabled(false);
+			}
+		
+			// Aqui você pode adicionar lógica para habilitar/desabilitar o botão "Salvar"
+			btSalvar.setEnabled(true);  // Habilita o botão salvar quando o estado do checkbox mudar
+		});
 	}
 
 	/**
@@ -164,13 +248,64 @@ public class ProdutoView extends JInternalFrame {
 		nome.setEnabled(false);
 		medida.setEnabled(false);
 		preco.setEnabled(false);
-		temEstoque.setEnabled(true);
-		estoque.setEnabled(true);
+		temEstoque.setEnabled(false);
+		estoque.setEnabled(false);
 	}
 
 	public void setupProdutoEncontrado() {
 		// configura os botões de ação
-		btSalvar.setEnabled(true);
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(true);
+		btNovoProduto.setEnabled(false);
+		btPesquisar.setEnabled(false);
+		temEstoque.setEnabled(true);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		medida.setEnabled(true);
+		preco.setEnabled(true);
+		estoque.setEnabled(false);
+
+	}
+	
+
+	public void setupProdutoComEstoqueEncontrado() {
+		// configura os botões de ação
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(true);
+		btNovoProduto.setEnabled(false);
+		btPesquisar.setEnabled(false);
+		temEstoque.setEnabled(true);
+
+		// configura o comportamento dos campos
+		id.setEnabled(false);
+		nome.setEnabled(true);
+		medida.setEnabled(true);
+		preco.setEnabled(true);
+		estoque.setEnabled(true);
+	}
+
+	public void setupVoltar() {
+		// configura os botões de ação
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(false);
+		btNovoProduto.setEnabled(true);
+		btPesquisar.setEnabled(true);
+		temEstoque.setEnabled(false);
+
+		// configura o comportamento dos campos
+		id.setEnabled(true);
+		nome.setEnabled(false);
+		medida.setEnabled(false);
+		preco.setEnabled(false);
+		estoque.setEnabled(false);
+
+    }
+
+	public void setupAdicionarProduto() {
+		// configura os botões de ação
+		btSalvar.setEnabled(false);
 		btVoltar.setEnabled(true);
 		btNovoProduto.setEnabled(false);
 		btPesquisar.setEnabled(false);
@@ -180,79 +315,79 @@ public class ProdutoView extends JInternalFrame {
 		nome.setEnabled(true);
 		medida.setEnabled(true);
 		preco.setEnabled(true);
+		estoque.setEnabled(false);
+		temEstoque.setEnabled(true);
 	}
 
-	public void setupVoltar() {
-		// configura os botões de ação
-		btSalvar.setEnabled(true);
-		btVoltar.setEnabled(true);
+	public void setupLimparCampos() {
 		btNovoProduto.setEnabled(true);
 		btPesquisar.setEnabled(true);
-
-		// configura o comportamento dos campos
 		id.setEnabled(true);
-		nome.setEnabled(true);
-		medida.setEnabled(true);
-		preco.setEnabled(true);
+		nome.setEnabled(false);
+		medida.setEnabled(false);
+		preco.setEnabled(false);
+		estoque.setEnabled(false);
+		this.temEstoque.setSelected(false);
+
+		this.id.setText("");
+		this.nome.setText("");
+		this.preco.setText("");
+		this.estoque.setText("");
 	}
-		public void setupAdicionarProduto() {
-			// configura os botões de ação
-			btSalvar.setEnabled(true);
-			btVoltar.setEnabled(true);
-			btNovoProduto.setEnabled(false);
-			btPesquisar.setEnabled(false);
+
 	
-			// configura o comportamento dos campos
-			id.setEnabled(false);
-			nome.setEnabled(true);
-			medida.setEnabled(true);
-			preco.setEnabled(true);
-		}
-		protected void onClickPesquisar() {
-			try {
-				int idProduto = Integer.parseInt(id.getText().trim());
-				System.out.println("Iniciando pesquisa para o ID: " + idProduto);
-	
-				Produto produto = this.service.pesquisarProdutoPorId(idProduto);
-	
-				if (produto != null) {
-					this.id.setText(String.valueOf(produto.getId()));
-					this.nome.setText(produto.getNome());
-					this.medida.setSelectedItem(produto.getMedida());
-					this.preco.setText(String.valueOf(produto.getPreco()));
-					if (produto.getEstoque()>= 0) {
-						this.estoque.setText(String.valueOf(produto.getEstoque()));
-						this.temEstoque.setSelected(true);
-					}
-					this.setupProdutoEncontrado();
-					this.produtoNovo = false;
-					System.out.println("Produto exibido com sucesso.");
+
+	protected void onClickPesquisar() {
+		try {
+			int idProduto = Integer.parseInt(id.getText().trim());
+			System.out.println("Iniciando pesquisa para o ID: " + idProduto);
+			this.service = new ProdutoService();
+			Produto produto = this.service.pesquisarProdutoPorId(idProduto);
+			
+			
+			if (produto != null) {
+				this.id.setText(String.valueOf(produto.getId()));
+				this.nome.setText(produto.getNome());
+				this.medida.setSelectedItem(produto.getMedida());
+				this.preco.setText(String.valueOf(produto.getPreco()));
+				if (produto.getEstoque()>= 0) {
+					this.estoque.setText(String.valueOf(produto.getEstoque()));
+					this.temEstoque.setSelected(true);
+					this.setupProdutoComEstoqueEncontrado();
 				} else {
-					JOptionPane.showMessageDialog(null, "Nenhum produto encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
-					System.out.println("Produto não encontrado.");  // Adicionando log aqui
+					this.setupProdutoEncontrado();
 				}
-			} catch (NumberFormatException e) {
-				System.err.println("Erro ao converter ID: " + e.getMessage());
-				JOptionPane.showMessageDialog(null, "ID inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
-			} catch (RuntimeException e) {
-				System.err.println("Erro na pesquisa: " + e.getMessage());
-				JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);  // Mostrar a exceção de forma mais clara
+				
+				this.produtoNovo = false;
+				System.out.println("Produto exibido com sucesso.");
+			} else {
+				JOptionPane.showMessageDialog(null, "Nenhum produto encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+				System.out.println("Produto não encontrado.");  
 			}
+		} catch (NumberFormatException e) {
+			System.err.println("Erro ao converter ID: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, "ID inválido!", "Erro", JOptionPane.ERROR_MESSAGE);
+		} catch (RuntimeException e) {
+			System.err.println("Erro na pesquisa: " + e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);  // Mostrar a exceção de forma mais clara
 		}
-	
-		/**
-		 * Executa as tarefas para preparar a interface para a inclusão de um novo
-		 * produto
-		 */
-		protected void onClickIncluirNovoProduto() {
-			this.setupAdicionarProduto();
-			this.produtoNovo = true;
-			System.out.println("==> onClickIncluirNovoProduto");
-		}
-	
-		/**
-		 * Executa as tarefas para voltar a inclusão de um produto
-		 */protected void onClickVoltar() {
+	}
+
+	/**
+	 * Executa as tarefas para preparar a interface para a inclusão de um novo
+	 * produto
+	 */
+	protected void onClickIncluirNovoProduto() {
+		this.setupAdicionarProduto();
+		this.produtoNovo = true;
+		System.out.println("==> onClickIncluirNovoProduto");
+	}
+
+	/**
+	 * Executa as tarefas para voltar a inclusão de um produto
+	 */
+
+	protected void onClickVoltar() {
 		this.id.setText(""); 
 		this.nome.setText(""); 
 		this.medida.setSelectedItem("");
@@ -263,14 +398,17 @@ public class ProdutoView extends JInternalFrame {
 		System.out.println("==> onClickVoltar");
 }
 
-/**
+
+
+
+	/**
 	 * Executa as tarefas para salvar a inclusão de um novo produto
 	 */
 	protected void onClickSalvar() {
 		try {
 			String idText = id.getText().trim();
 			int idProduto = 0;
-
+	
 			if (!idText.isEmpty()) {
 				idProduto = Integer.parseInt(idText);
 				if (idProduto < 0) {
@@ -278,62 +416,78 @@ public class ProdutoView extends JInternalFrame {
 					return; // Interrompe a execução
 				}
 			}
-
+	
 			String precoText = preco.getText().trim();
 			if (precoText.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "O campo Preço não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-
+	
 			precoText = precoText.replace(",", ".");
 			double precoProduto = Double.parseDouble(precoText);
-
+	
 			if (precoProduto <= 0) {
 				JOptionPane.showMessageDialog(null, "O preço deve ser maior que zero!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
-
+	
 			String nomeProduto = nome.getText().trim();
 			if (nomeProduto.isEmpty()) {
 				JOptionPane.showMessageDialog(null, "O campo Nome não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
-
+	
 			UnidadeMedida medidaProduto = (UnidadeMedida) medida.getSelectedItem();
 			if (medidaProduto == null) {
 				JOptionPane.showMessageDialog(null, "Selecione uma medida válida!", "Erro", JOptionPane.ERROR_MESSAGE);
 				return; // Interrompe a execução
 			}
-
-			String estoqueText = estoque.getText().trim();
-			if (estoqueText.isEmpty()) {
-				JOptionPane.showMessageDialog(null, "O campo Estoque não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
-				return; // Interrompe a execução
-			}
-
 			int estoqueProduto;
-			try {
-				estoqueProduto = Integer.parseInt(estoqueText); // Conversão do texto para inteiro
-				if (estoqueProduto < 0) {
-					JOptionPane.showMessageDialog(null, "O estoque não pode ser negativo!", "Erro", JOptionPane.ERROR_MESSAGE);
+			if(this.temEstoque.isSelected()) {
+				String estoqueText = estoque.getText().trim();
+				if (estoqueText.isEmpty()) {
+					JOptionPane.showMessageDialog(null, "O campo Estoque não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
 					return; // Interrompe a execução
 				}
-			} catch (NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "O valor do estoque deve ser um número inteiro válido!", "Erro", JOptionPane.ERROR_MESSAGE);
-				return; // Interrompe a execução
+	
+				
+				estoqueProduto = Integer.parseInt(estoqueText); // Conversão do texto para inteiro
+				if (estoqueProduto < 0 && this.temEstoque.isSelected()) {
+					JOptionPane.showMessageDialog(null, "O valor do estoque deve ser um número inteiro válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+					return; // Interrompe a execução
+				} 
+			} else {
+				estoqueProduto = -1;
 			}
 
+
+
+			
+			// try {
+			// 	estoqueProduto = Integer.parseInt(estoqueText); // Conversão do texto para inteiro
+			// 	if (estoqueProduto < 0 && this.temEstoque.isSelected()) {
+			// 		JOptionPane.showMessageDialog(null, "O estoque não pode ser negativo!", "Erro", JOptionPane.ERROR_MESSAGE);
+			// 		return; // Interrompe a execução
+			// 	}
+			// } catch (NumberFormatException e) {
+			// 	JOptionPane.showMessageDialog(null, "O valor do estoque deve ser um número inteiro válido!", "Erro", JOptionPane.ERROR_MESSAGE);
+			// 	return; // Interrompe a execução
+			// }
+
+			
+	
 			ProdutoService upsert = new ProdutoService();
 			if (this.produtoNovo) {
 				upsert.cadastrarProduto(nomeProduto, medidaProduto, precoProduto, estoqueProduto);
 			} else {
 				upsert.atualizarProduto(nomeProduto, idProduto, medidaProduto, precoProduto, estoqueProduto);
 			}
-
+			this.setupLimparCampos();
 			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-
+	
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Um ou mais campos numéricos estão inválidos. Verifique os valores inseridos.", "Erro", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
 }
