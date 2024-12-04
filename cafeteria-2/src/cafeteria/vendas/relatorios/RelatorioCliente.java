@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import cafeteria.Conexao;
 import cafeteria.vendas.clientes.Cliente;
 
@@ -26,6 +28,7 @@ public class RelatorioCliente implements RelatorioExportavelEmArquivoTexto {
             for (Cliente cliente : clientes) {
                 writer.printf("%d - %s - %s%n", cliente.getId(), cliente.getNome(), cliente.getTelefone());
             }
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

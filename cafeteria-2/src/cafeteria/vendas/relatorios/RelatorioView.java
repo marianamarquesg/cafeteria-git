@@ -100,21 +100,38 @@ public class RelatorioView extends JInternalFrame {
 		btSelecionarDestino.setEnabled(true);
 	}
 
+	public void setupLimparCampos() {
+		// configura os botões de ação
+		btSelecionarDestino.setEnabled(true);
+		btExportar.setEnabled(false);
+		this.destinoCaminhoAbsoluto.setText("");
+		this.destinoSelecionado = null;
+	
+	}
+
 	/**
 	 * Executa as tarefas para efetuar uma pesquisa com base no ID informado
 	 */
 	protected void onClickSelecionarDestino() {
-		// Criação do JFileChooser
 		JFileChooser fileChooser = new JFileChooser();
 		int returnValue = fileChooser.showOpenDialog(null);
-
+	
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
-			// Obtendo o arquivo selecionado
 			destinoSelecionado = fileChooser.getSelectedFile();
+			String nomeArquivo = destinoSelecionado.getName();
+			String regex = "^[a-zA-Z0-9._-]+$";
+			
+			if (!nomeArquivo.matches(regex)) {
+				JOptionPane.showMessageDialog(null, "O nome do arquivo contém caracteres especiais. Por favor, use apenas letras, números, ponto, underline ou hífen.");
+				return;
+			}
+	
 			destinoCaminhoAbsoluto.setText(destinoSelecionado.getAbsolutePath());
 			btExportar.setEnabled(true);
 		}
 	}
+	
+	
 
 	/**
 	 * Executa as tarefas para cancelar a geração do relatório
@@ -130,8 +147,9 @@ public class RelatorioView extends JInternalFrame {
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado + " " + nomeRelatorio.getText());
 		
 		this.exportador.exportar(this.destinoSelecionado);
-		JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
 
+		JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
+		this.setupLimparCampos();
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado);
 	}
 
