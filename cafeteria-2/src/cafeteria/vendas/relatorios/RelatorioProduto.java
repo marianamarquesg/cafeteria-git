@@ -21,7 +21,7 @@ public class RelatorioProduto implements RelatorioExportavelEmArquivoTexto {
     public void exportar(File destino) {
         List<Produto> produtos = this.listarProdutos();
 
-        try(PrintWriter writer = new PrintWriter(new PrintWriter(destino))) {
+        try(PrintWriter writer = new PrintWriter(new PrintWriter(destino.getAbsolutePath()))) {
 			writer.println("ID - NOME - MEDIDA - PRECO - ESTOQUE");        
             for (Produto produto : produtos) {
                 writer.printf("%d - %s - %s - %.2f - %d%n", 

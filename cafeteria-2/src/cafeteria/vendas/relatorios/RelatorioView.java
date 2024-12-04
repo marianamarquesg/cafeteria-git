@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class RelatorioView extends JInternalFrame {
@@ -126,11 +127,11 @@ public class RelatorioView extends JInternalFrame {
 	 * Executa as tarefas para exportar a exportação do relatório
 	 */
 	protected void onClickExportar() {
-		//String nome = ;
-		//String destino = destinoCaminhoAbsoluto.getText();
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado + " " + nomeRelatorio.getText());
+		
+		this.exportador.exportar(this.destinoSelecionado);
+		JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
 
-		this.exportador.exportar(destinoSelecionado);
 		System.out.println("==> onClickExportar" + " " + destinoSelecionado);
 	}
 

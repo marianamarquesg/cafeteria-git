@@ -21,7 +21,7 @@ public class RelatorioCliente implements RelatorioExportavelEmArquivoTexto {
     public void exportar(File destino) {
         List<Cliente> clientes = this.listarClientes();
 
-        try(PrintWriter writer = new PrintWriter(new PrintWriter(destino))) {
+        try(PrintWriter writer = new PrintWriter(new PrintWriter(destino.getAbsolutePath()))) {
 			writer.println("ID - NOME - TELEFONE");        
             for (Cliente cliente : clientes) {
                 writer.printf("%d - %s - %s%n", cliente.getId(), cliente.getNome(), cliente.getTelefone());
