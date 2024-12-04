@@ -1,14 +1,10 @@
 package cafeteria.vendas.clientes;
 //import java.util.ArrayList;
 
-import java.util.ArrayList;
-
 public class Cliente {
 	private String nome;
 	private String telefone;
 	private int id;
-
-	//private ArrayList<Registro> registros;
 	
 	public String getNome() {
 		return nome;
@@ -38,5 +34,4 @@ public class Cliente {
     public int getId() {
         return id;
     }
-
 }

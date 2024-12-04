@@ -91,22 +91,19 @@ public class ClienteView extends JInternalFrame {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
+		
 
 	nome.getDocument().addDocumentListener(new DocumentListener() {
 		
     @Override
-    public void insertUpdate(DocumentEvent e) {
-
-		
-			btSalvar.setEnabled(true);
-		
+    public void insertUpdate(DocumentEvent e) {	
+	    btSalvar.setEnabled(true);
         System.out.println("Texto inserido: " + nome.getText());
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-		btSalvar.setEnabled(true);
+		btSalvar.setEnabled(false);
         System.out.println("Texto removido: " + nome.getText());
     }
 
@@ -115,13 +112,9 @@ public class ClienteView extends JInternalFrame {
         // Este método não é chamado para JTextField
     }
 
-	// protected void verificaAlteracoes() {
-	// 	if(!this.clienteNovo) {
-	// 		btSalvar.setEnabled(true);
-	// 	}
-	// }
-
 });
+
+
 
 		btSalvar = new JButton("Salvar");
 		btSalvar.addActionListener(new ActionListener() {
@@ -195,15 +188,15 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupVoltar() {
 		// configura os botões de ação
-		btSalvar.setEnabled(true);
-		btVoltar.setEnabled(true);
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(false);
 		btNovoCliente.setEnabled(true);
 		btPesquisar.setEnabled(true);
 
 		// configura o comportamento dos campos
 		id.setEnabled(true);
-		nome.setEnabled(true);
-		telefone.setEnabled(true);
+		nome.setEnabled(false);
+		telefone.setEnabled(false);
 
 		this.nome.setText("");
 		this.telefone.setText("");
@@ -212,8 +205,8 @@ public class ClienteView extends JInternalFrame {
 
 	public void setupAdicionarCliente() {
 		// configura os botões de ação
-		btSalvar.setEnabled(true);
-		btVoltar.setEnabled(true);
+		btSalvar.setEnabled(false);
+		btVoltar.setEnabled(false);
 		btNovoCliente.setEnabled(false);
 		btPesquisar.setEnabled(false);
 
@@ -227,16 +220,15 @@ public class ClienteView extends JInternalFrame {
 	 */
 	protected void onClickPesquisar() {
 		int idCliente =  Integer.parseInt(id.getText());
-		Cliente cliente = this.service.pesquisarClientePorId(idCliente); //chama a service
+		Cliente cliente = this.service.pesquisarClientePorId(idCliente);
 		if(cliente != null) {
 			this.nome.setText(cliente.getNome());
 			this.telefone.setText(cliente.getTelefone());
 			this.setupClienteEncontrado();
 			this.clienteNovo = false;
 		}else {
-			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Sucesso", JOptionPane.ERROR_MESSAGE);
-		}
-		
+			JOptionPane.showMessageDialog(null, "Nenhum cliente encontrado!", "Erro", JOptionPane.ERROR_MESSAGE);
+		}		
 	}
 
 	/**
@@ -273,12 +265,16 @@ public class ClienteView extends JInternalFrame {
 					int idCliente =  Integer.parseInt(id.getText());
 					this.service.atualizarCliente(nomeCliente, telefoneCliente, idCliente);
 				}
-			this.setupAdicionarCliente();
+
 			JOptionPane.showMessageDialog(null, "Operação realizada com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);	
 			this.setupVoltar();
 
 		}else{
-			JOptionPane.showMessageDialog(null, "Preencha o nome e/ou o telefone!", "Erro", JOptionPane.ERROR_MESSAGE);
+			if(nomeCliente.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Preencha o nome do cliente!", "Erro", JOptionPane.ERROR_MESSAGE);
+			} else if(telefoneCliente.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Preencha o número de telefone do cliente!", "Erro", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 			
 		System.out.println("==> onClickSalvar");
